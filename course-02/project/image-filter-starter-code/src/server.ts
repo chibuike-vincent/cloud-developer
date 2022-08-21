@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import fs from "fs"
 import path from "path"
+import { Request, Response } from 'express';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 (async () => {
@@ -30,13 +31,13 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
 
-  app.get( "/filteredimage", async ( req, res ) => {
+  app.get( "/filteredimage", async ( req: Request, res:Response ) => {
     try {
       const image_url:string = req.query.image_url
 
       if(!image_url) throw new Error("No image Url provided.")
 
-      const image = await filterImageFromURL(image_url)
+      const image:any = await filterImageFromURL(image_url)
 
       if(image){
         res.sendFile(image)
@@ -44,9 +45,9 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
         throw new Error("Could not process provided url, please try again.")
       }
       try {
-        const filePath = path.join(__dirname, 'util/tmp');
+        const filePath:string = path.join(__dirname, 'util/tmp');
 
-        const files = fs.readdirSync(filePath)
+        const files:Array<string> = fs.readdirSync(filePath)
        
         await deleteLocalFiles(files)
       } catch (error) {
